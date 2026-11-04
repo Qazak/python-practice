@@ -1,169 +1,208 @@
-import random
-patients = [
-    {"id": 1, "age": 65, "tumor_volume": 0.80, "ctdna": 0.50, "toxicity": 0.20, "survival": 24},
-    {"id": 2, "age": 58, "tumor_volume": 0.60, "ctdna": 0.40, "toxicity": 0.30, "survival": 36},
-    {"id": 3, "age": 71, "tumor_volume": 0.90, "ctdna": 0.70, "toxicity": 0.40, "survival": 18},
-    {"id": 4, "age": 55, "tumor_volume": 0.40, "ctdna": 0.20, "toxicity": 0.10, "survival": 48},
-    {"id": 5, "age": 62, "tumor_volume": 0.75, "ctdna": 0.55, "toxicity": 0.25, "survival": 30}
-]
+import numpy as np
 
-# =====================================================
-# Реконструкция состояния (Neural Operator surrogate)
-# =====================================================
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
 
-def reconstruct(patient):
+from sklearn.neural_network import MLPClassifier
 
-    x0 = (
-        0.5 * patient["tumor_volume"]
-        + 0.3 * patient["ctdna"]
-        - 0.2 * patient["toxicity"]
+from sklearn.metrics import (
+    accuracy_score,
+    precision_score,
+    recall_score,
+    f1_score
+)
+
+# =====================================
+# GFNN
+# =====================================
+
+class GFNN:
+
+    def __init__(
+        self,
+        initial_neurons=8,
+        growth_step=2,
+        max_neurons=66,
+        threshold=0.05
+    ):
+
+        self.initial_neurons = initial_neurons
+        self.growth_step = growth_step
+        self.max_neurons = max_neurons
+        self.threshold = threshold
+
+        self.model = None
+
+    def fit(
+        self,
+        X_train,
+        y_train,
+        X_val,
+        y_val
+    ):
+
+        best_acc = -1.0
+        neurons = self.initial_neurons
+
+        while neurons <= self.max_neurons:
+
+            model = MLPClassifier(
+                hidden_layer_sizes=(neurons,),
+                max_iter=500,
+                random_state=0
+            )
+
+            model.fit(X_train, y_train)
+
+            y_pred_val = model.predict(X_val)
+
+            acc = accuracy_score(
+                y_val,
+                y_pred_val
+            )
+
+            if acc > best_acc:
+
+                best_acc = acc
+
+                self.model = model
+
+            if (1.0 - acc) <= self.threshold:
+                break
+
+            neurons += self.growth_step
+
+    def predict(self, X):
+
+        return self.model.predict(X)
+
+# =====================================
+# DATA
+# =====================================
+
+X, y = load_iris(return_X_y=True)
+
+scaler = StandardScaler()
+
+X = scaler.fit_transform(X)
+
+# =====================================
+# STORAGE
+# =====================================
+
+accs = []
+precs = []
+recs = []
+f1s = []
+
+print("START")
+
+# =====================================
+# 30 RUNS
+# =====================================
+
+for seed in range(30):
+
+    print("RUN", seed + 1)
+
+    X_train_full, X_test, y_train_full, y_test = \
+        train_test_split(
+            X,
+            y,
+            test_size=0.20,
+            stratify=y,
+            random_state=seed
+        )
+
+    X_train, X_val, y_train, y_val = \
+        train_test_split(
+            X_train_full,
+            y_train_full,
+            test_size=0.25,
+            stratify=y_train_full,
+            random_state=seed
+        )
+
+    model = GFNN()
+
+    model.fit(
+        X_train,
+        y_train,
+        X_val,
+        y_val
     )
 
-    theta = patient["age"] / 100.0
+    y_pred = model.predict(X_test)
 
-    return x0, theta
+    acc = accuracy_score(
+        y_test,
+        y_pred
+    )
 
+    prec = precision_score(
+        y_test,
+        y_pred,
+        average="macro"
+    )
 
-# =====================================================
-# Улучшенное управление
-# =====================================================
+    rec = recall_score(
+        y_test,
+        y_pred,
+        average="macro"
+    )
 
-def optimal_control(x):
+    f1 = f1_score(
+        y_test,
+        y_pred,
+        average="macro"
+    )
 
-    target = 0.10
+    accs.append(acc)
+    precs.append(prec)
+    recs.append(rec)
+    f1s.append(f1)
 
-    k = 3.0
+# =====================================
+# RESULTS
+# =====================================
 
-    u = k * (x - target)
-
-    if u < 0:
-        u = 0
-
-    if u > 1:
-        u = 1
-
-    return u
-
-
-# =====================================================
-# Динамика опухоли
-# =====================================================
-
-def tumor_dynamics(x, u, theta):
-
-    growth = theta * x * (1.0 - x)
-
-    treatment = 1.5 * u * x
-
-    return growth - treatment
-
-
-# =====================================================
-# Симуляция пациента
-# =====================================================
-
-def simulate_patient(patient):
-
-    x0, theta = reconstruct(patient)
-
-    x = max(0.1, abs(x0))
-
-    dt = 0.1
-    steps = 50
-
-    trajectory = []
-
-    for _ in range(steps):
-
-        u = optimal_control(x)
-
-        dx = tumor_dynamics(x, u, theta)
-
-        x = x + dt * dx
-
-        if x < 0:
-            x = 0
-
-        trajectory.append(x)
-
-    final_tumor = trajectory[-1]
-
-    predicted_survival = 60 * (1 - final_tumor)
-
-    error = abs(predicted_survival - patient["survival"])
-
-    return {
-        "id": patient["id"],
-        "initial": round(x0, 4),
-        "final": round(final_tumor, 4),
-        "predicted_survival": round(predicted_survival, 2),
-        "actual_survival": patient["survival"],
-        "error": round(error, 2),
-        "success": final_tumor < x0
-    }
-
-
-# =====================================================
-# Валидация всей когорты
-# =====================================================
-
-results = []
-
-for patient in patients:
-
-    result = simulate_patient(patient)
-
-    results.append(result)
-
-# =====================================================
-# Вывод результатов
-# =====================================================
-
-print("VALIDATION OF 5 PATIENTS")
 print()
+print("=" * 50)
+print("IRIS RESULTS")
+print("=" * 50)
 
-success_count = 0
-total_error = 0
+print("Runs =", len(accs))
 
-for r in results:
+print(
+    "Accuracy Mean =",
+    np.mean(accs)
+)
 
-    if r["success"]:
-        success_count += 1
+print(
+    "Accuracy Std =",
+    np.std(accs)
+)
 
-    total_error += r["error"]
+print(
+    "Precision Mean =",
+    np.mean(precs)
+)
 
-    print("Patient", r["id"])
-    print(" Initial tumor =", r["initial"])
-    print(" Final tumor   =", r["final"])
-    print(" Predicted survival =", r["predicted_survival"])
-    print(" Actual survival    =", r["actual_survival"])
-    print(" Absolute error     =", r["error"])
+print(
+    "Recall Mean =",
+    np.mean(recs)
+)
 
-    if r["success"]:
-        print(" Result: SUCCESS")
-    else:
-        print(" Result: FAILURE")
+print(
+    "F1 Mean =",
+    np.mean(f1s)
+)
 
-    print()
+print("END")
+print("Length GFNN:", len(gfnn_accs))
+print("Length Baseline:", len(baseline_accs))
 
-mae = total_error / len(results)
-
-print("--------------------------------------")
-print("Patients:", len(results))
-print("Successful controls:", success_count)
-print("Control success rate:",
-      round(100 * success_count / len(results), 1), "%")
-print("Mean Absolute Error:", round(mae, 2), "months")
-print("--------------------------------------")
-
-# =====================================================
-# Итоговое заключение
-# =====================================================
-
-if success_count >= 4:
-
-    print()
-    print("Conclusion:")
-    print("The proposed digital twin and optimal control")
-    print("framework achieved tumor reduction in the")
-    print("majority of virtual patients.")
+print("GFNN:", gfnn_accs[:5])
+print("Baseline:", baseline_accs[:5])
+print("END")
