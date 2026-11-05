@@ -13,6 +13,7 @@ No setup needed. Each badge opens the file in a free online Python editor and ru
 | [`Continuous-Stirred-Tank-Reactor.py`](./Continuous-Stirred-Tank-Reactor.py) | [![Run in Python Compiler](https://pythoncompiler.io/badge-run.svg)](https://pythoncompiler.io/?gh=Qazak/python-practice/main/Continuous-Stirred-Tank-Reactor.py) |
 | [`Digits.py`](./Digits.py) | [![Run in Python Compiler](https://pythoncompiler.io/badge-run.svg)](https://pythoncompiler.io/?gh=Qazak/python-practice/main/Digits.py) |
 | [`Iris.py`](./Iris.py) | [![Run in Python Compiler](https://pythoncompiler.io/badge-run.svg)](https://pythoncompiler.io/?gh=Qazak/python-practice/main/Iris.py) |
+| [`LSTM.py`](./LSTM.py) | [![Run in Python Compiler](https://pythoncompiler.io/badge-run.svg)](https://pythoncompiler.io/?gh=Qazak/python-practice/main/LSTM.py) |
 | [`Van-der-Pol-Oscillator.py`](./Van-der-Pol-Oscillator.py) | [![Run in Python Compiler](https://pythoncompiler.io/badge-run.svg)](https://pythoncompiler.io/?gh=Qazak/python-practice/main/Van-der-Pol-Oscillator.py) |
 | [`Wine.py`](./Wine.py) | [![Run in Python Compiler](https://pythoncompiler.io/badge-run.svg)](https://pythoncompiler.io/?gh=Qazak/python-practice/main/Wine.py) |
 | [`main.py`](./main.py) | [![Run in Python Compiler](https://pythoncompiler.io/badge-run.svg)](https://pythoncompiler.io/?gh=Qazak/python-practice/main/main.py) |
