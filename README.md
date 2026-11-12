@@ -8,6 +8,7 @@ No setup needed. Each badge opens the file in a free online Python editor and ru
 
 | File | |
 | --- | --- |
+| [`Breast-Cancer-Wisconsin-2.py`](./Breast-Cancer-Wisconsin-2.py) | [![Run in Python Compiler](https://pythoncompiler.io/badge-run.svg)](https://pythoncompiler.io/?gh=Qazak/python-practice/main/Breast-Cancer-Wisconsin-2.py) |
 | [`Breast-Cancer-Wisconsin.py`](./Breast-Cancer-Wisconsin.py) | [![Run in Python Compiler](https://pythoncompiler.io/badge-run.svg)](https://pythoncompiler.io/?gh=Qazak/python-practice/main/Breast-Cancer-Wisconsin.py) |
 | [`CSTR.py`](./CSTR.py) | [![Run in Python Compiler](https://pythoncompiler.io/badge-run.svg)](https://pythoncompiler.io/?gh=Qazak/python-practice/main/CSTR.py) |
 | [`Cart-Pole-TENO.py`](./Cart-Pole-TENO.py) | [![Run in Python Compiler](https://pythoncompiler.io/badge-run.svg)](https://pythoncompiler.io/?gh=Qazak/python-practice/main/Cart-Pole-TENO.py) |
@@ -15,6 +16,7 @@ No setup needed. Each badge opens the file in a free online Python editor and ru
 | [`Colab-F-MINIST.py`](./Colab-F-MINIST.py) | [![Run in Python Compiler](https://pythoncompiler.io/badge-run.svg)](https://pythoncompiler.io/?gh=Qazak/python-practice/main/Colab-F-MINIST.py) |
 | [`Continuous-Stirred-Tank-Reactor.py`](./Continuous-Stirred-Tank-Reactor.py) | [![Run in Python Compiler](https://pythoncompiler.io/badge-run.svg)](https://pythoncompiler.io/?gh=Qazak/python-practice/main/Continuous-Stirred-Tank-Reactor.py) |
 | [`Digits.py`](./Digits.py) | [![Run in Python Compiler](https://pythoncompiler.io/badge-run.svg)](https://pythoncompiler.io/?gh=Qazak/python-practice/main/Digits.py) |
+| [`Iris-Dataset.py`](./Iris-Dataset.py) | [![Run in Python Compiler](https://pythoncompiler.io/badge-run.svg)](https://pythoncompiler.io/?gh=Qazak/python-practice/main/Iris-Dataset.py) |
 | [`Iris.py`](./Iris.py) | [![Run in Python Compiler](https://pythoncompiler.io/badge-run.svg)](https://pythoncompiler.io/?gh=Qazak/python-practice/main/Iris.py) |
 | [`LSTM.py`](./LSTM.py) | [![Run in Python Compiler](https://pythoncompiler.io/badge-run.svg)](https://pythoncompiler.io/?gh=Qazak/python-practice/main/LSTM.py) |
 | [`TENO-VAN-DER-POL.py`](./TENO-VAN-DER-POL.py) | [![Run in Python Compiler](https://pythoncompiler.io/badge-run.svg)](https://pythoncompiler.io/?gh=Qazak/python-practice/main/TENO-VAN-DER-POL.py) |
